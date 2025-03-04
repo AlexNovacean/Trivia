@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game</title>
+</head>
+<body>
+<h1 th:inline="text">Hello <span th:remove="tag" sec:authentication="name">thymeleaf</span>!</h1>
+<h1 th:inline="text">You are <span th:remove="tag" sec:authentication="authorities">role</span>!</h1>
+<h2 sec:authorize="hasRole('ROLE_USER')" >YOU HAVE ROLE USER</h2>
+<h2 sec:authorize="hasRole('ROLE_ADMIN')" >YOU HAVE ROLE ADMIN</h2>
+<h2 sec:authorize="hasAnyRole('ROLE_USER','ROLE_ADMIN')" >YOU HAVE ROLE USER AND/OR ADMIN</h2>
+<form th:action="@{/logout}" method="post">
+    <input type="submit" value="Sign Out"/>
+</form>
+
+</body>
+</html>

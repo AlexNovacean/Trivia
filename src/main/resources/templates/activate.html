@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activate</title>
+    <link th:href="@{/css/styles.css}" rel="stylesheet" />
+</head>
+<body>
+
+<div th:if="${failed}">
+    Activation failed, a new activation code was generated and sent to <span th:text="${activationDto.email} ?: 'your email.'" />
+    <br />
+    Please try again with the new generated code.
+</div>
+
+<div th:if="${activating}">
+    Account is not yet activated. Please activate using the code that was sent to <span th:text="${activationDto.email} ?: 'your email.'" />
+    <br />
+    Or click the button bellow to generate a new activation code.
+</div>
+
+<div th:if="${firstActivation}">
+    An email was sent to  <span th:text="${activationDto.email}" /> with a new activation code.
+    Please activate your account using the code.
+</div>
+
+<form th:action="@{/activate}" method="post" th:object="${activationDto}">
+    <div>
+        <label for="code">Activation code</label>
+        <div>
+            <input type="hidden" th:field="*{email}" th:value="${activationDto.email}" />
+            <input th:field="*{code}" id="code" placeholder="activation code" />
+            <p th:if="${#fields.hasErrors('code')}" th:errorclass="error" th:errors="*{code}"></p>
+        </div>
+    </div>
+    <div><input type="submit" value="Activate"/></div>
+</form>
+<!--TODO jquery request with button to generate code and send it-->
+<p class="generate-code hide">Code generated and sent to <span th:text="${activationDto.email}" />
+    <br />
+    <span class="generate-code-timer" >Generate Again In: </span>
+</p>
+<button id="generate-button" type="button" th:data-email="${activationDto.email}" th:onclick="generateActivationCode(this.getAttribute('data-email'))">Generate code</button>
+<a th:href="@{/home}"><button>Home</button></a>
+<script type="text/javascript" th:src="@{/js/script.js}"></script>
+</body>
+</html>

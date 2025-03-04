@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+</head>
+<body>
+<div>
+    <h1>Register</h1>
+    <form method="post" action="/register" th:object="${registerDto}">
+
+        <div>
+            <label for="email">Email</label>
+            <div>
+                <input th:field="*{email}" id="email" placeholder="Email" />
+                <p th:if="${#fields.hasErrors('email')}" th:errorclass="error" th:errors="*{email}"></p>
+            </div>
+        </div>
+
+        <div>
+            <label for="password">Password</label>
+            <div>
+                <input th:field="*{password}" id="password" placeholder="Password" />
+                <p th:if="${#fields.hasErrors('password')}" th:errorclass="error" th:errors="*{password}"></p>
+            </div>
+        </div>
+        <div>
+            <div>
+                <button type="submit">Register</button>
+            </div>
+            <div>
+                <a th:href="@{/home}">Cancel</a>
+            </div>
+        </div>
+
+    </form>
+
+</div>
+</body>
+</html>

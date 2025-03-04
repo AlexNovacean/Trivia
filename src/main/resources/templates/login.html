@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log In</title>
+</head>
+<body>
+<div th:if="${error}">
+    error
+</div>
+<div th:if="${userLocked}">
+    <div>
+        <p>Account disabled. Reason: <span th:text="${reason}"></span></p>
+        <p>For mor information please contact platform administrator on admin@trivia.ro</p>
+    </div>
+</div>
+<div th:if="${badCredentials}">
+    badCredentials
+</div>
+<div th:if="${param.logout}">
+    You have been logged out.
+</div>
+<div th:if="${changed}">
+    Password changed.
+</div>
+<div th:if="${activated}">
+    Account activate successfully.
+</div>
+<form th:action="@{/login}" method="post">
+    <div><label> User Name : <input type="text" name="username"/> </label></div>
+    <div><label> Password: <input type="password" name="password"/> </label></div>
+    <div><input type="submit" value="Sign In"/></div>
+</form>
+<a th:href="@{/register}"><button>Register</button></a>
+</body>
+</html>
