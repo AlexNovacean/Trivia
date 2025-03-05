@@ -5,6 +5,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Entity
 public class TriviaQuestion {
 
@@ -19,7 +22,6 @@ public class TriviaQuestion {
     private String correctAnswer;
     private TriviaCategory category;
     private TriviaDifficulty difficulty;
-
 
     public Integer getId() {
         return id;
@@ -67,5 +69,9 @@ public class TriviaQuestion {
 
     public void setDifficulty(TriviaDifficulty difficulty) {
         this.difficulty = difficulty;
+    }
+
+    public List<String> answers(){
+        return Arrays.stream(answers.split(",")).toList();
     }
 }
