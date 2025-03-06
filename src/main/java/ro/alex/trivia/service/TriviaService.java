@@ -23,11 +23,11 @@ public class TriviaService {
         return repository.findAll();
     }
 
-    public void save(TriviaQuestion triviaQuestion) {
-        repository.save(triviaQuestion);
+    public TriviaQuestion save(TriviaQuestion triviaQuestion) {
+        return repository.save(triviaQuestion);
     }
 
-    public void delete(TriviaQuestion triviaQuestion) {
-        repository.delete(triviaQuestion);
+    public void delete(Integer triviaId) {
+        repository.deleteById(triviaId);
     }
 }

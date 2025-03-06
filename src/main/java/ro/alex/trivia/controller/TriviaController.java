@@ -1,15 +1,16 @@
 package ro.alex.trivia.controller;
 
-import jakarta.validation.Valid;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ro.alex.trivia.model.TriviaDto;
+import org.springframework.web.servlet.ModelAndView;
+import ro.alex.trivia.model.TriviaCategory;
+import ro.alex.trivia.model.TriviaDifficulty;
 import ro.alex.trivia.model.TriviaQuestion;
 import ro.alex.trivia.service.TriviaService;
 
-@Controller
+import java.util.Arrays;
+
+@RestController
 public class TriviaController {
 
     private final TriviaService triviaService;
@@ -19,26 +20,27 @@ public class TriviaController {
     }
 
     @PostMapping("/trivia")
-    public String addTrivia(Model model,
-                          @Valid @ModelAttribute TriviaDto triviaDto,
-                          BindingResult bindingResult) {
-        if(bindingResult.hasErrors()) {
-            return "trivia";
-        }
-        return "redirect:/trivia";
+    public ResponseEntity<TriviaQuestion> addTrivia(@RequestBody TriviaQuestion triviaQuestion) {
+        return ResponseEntity.ok(triviaService.save(triviaQuestion));
+    }
+
+    @PatchMapping("/trivia")
+    public TriviaQuestion updateTriviaQuestion(@RequestBody TriviaQuestion triviaQuestion){
+        return triviaService.save(triviaQuestion);
     }
 
     @GetMapping("/trivia")
-    public String getTriviaQuestions(Model model) {
-        model.addAttribute("questions", triviaService.getQuestions());
-        model.addAttribute("question", new TriviaDto());
-        return "trivia";
+    public ModelAndView getTriviaQuestions() {
+        ModelAndView mav = new ModelAndView("trivia");
+        mav.addObject("questions", triviaService.getQuestions());
+        mav.addObject("categories", Arrays.stream(TriviaCategory.values()).map(TriviaCategory::name).toList());
+        mav.addObject("difficulties", Arrays.stream(TriviaDifficulty.values()).map(TriviaDifficulty::name).toList());
+        return mav;
     }
 
     @DeleteMapping("/trivia")
-    public String deleteTriviaQuestion(@RequestBody TriviaQuestion question) {
-        triviaService.delete(question);
-        return "redirect:/trivia";
+    public void deleteTriviaQuestion(@RequestBody Integer triviaId) {
+        triviaService.delete(triviaId);
     }
 
 }
