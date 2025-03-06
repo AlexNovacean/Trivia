@@ -1,14 +1,13 @@
 package ro.alex.trivia.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import ro.alex.trivia.model.TriviaDto;
 import ro.alex.trivia.model.TriviaQuestion;
 import ro.alex.trivia.service.TriviaService;
-
-import java.util.List;
 
 @Controller
 public class TriviaController {
@@ -20,15 +19,26 @@ public class TriviaController {
     }
 
     @PostMapping("/trivia")
-    @ResponseBody
-    public void addTrivia(@RequestBody TriviaQuestion question) {
-        triviaService.save(question);
+    public String addTrivia(Model model,
+                          @Valid @ModelAttribute TriviaDto triviaDto,
+                          BindingResult bindingResult) {
+        if(bindingResult.hasErrors()) {
+            return "trivia";
+        }
+        return "redirect:/trivia";
     }
 
     @GetMapping("/trivia")
-    @ResponseBody
-    public List<TriviaQuestion> getTriviaQuestions() {
-        return triviaService.getQuestions();
+    public String getTriviaQuestions(Model model) {
+        model.addAttribute("questions", triviaService.getQuestions());
+        model.addAttribute("question", new TriviaDto());
+        return "trivia";
+    }
+
+    @DeleteMapping("/trivia")
+    public String deleteTriviaQuestion(@RequestBody TriviaQuestion question) {
+        triviaService.delete(question);
+        return "redirect:/trivia";
     }
 
 }

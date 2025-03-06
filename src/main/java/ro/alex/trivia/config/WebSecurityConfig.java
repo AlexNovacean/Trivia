@@ -29,6 +29,7 @@ public class WebSecurityConfig {
         http
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/", "/home", "/login/**", "/register", "/activate", "/password", "/css/**","/js/**").permitAll()
+                        .requestMatchers("/trivia/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .formLogin(form -> form.loginPage("/login").defaultSuccessUrl("/home").failureHandler(authenticationFailureService))
                 .httpBasic(Customizer.withDefaults())
