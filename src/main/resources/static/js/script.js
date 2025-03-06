@@ -188,9 +188,21 @@ function addNewTriviaEntry() {
     const difficulties = document.querySelector(".add-trivia-button").getAttribute('data-difficulties');
 
     triviaContainer.innerHTML = `
-        <div class="trivia-cell"><input type="text" placeholder="Question" /></div>
-        <div class="trivia-cell"><input type="text" placeholder="Answers" /></div>
-        <div class="trivia-cell"><input type="text" placeholder="Correct Answer" /></div>
+        <div class="trivia-cell">
+        <input type="text" placeholder="Question" />
+        <br />
+        <span class="valid-question hidden" />
+        </div>
+        <div class="trivia-cell">
+        <input type="text" placeholder="Answers" />
+        <br />
+        <span class="valid-answers hidden" />
+        </div>
+        <div class="trivia-cell">
+        <input type="text" placeholder="Correct Answer" />
+        <br />
+        <span class="valid-correct-answer hidden" />
+        </div>
         <div class="trivia-cell">
             <select>
                 ${extractOptions(categories).map(category => `<option value="${category}">${category}</option>`).join('')}
@@ -230,23 +242,24 @@ function saveNewTrivia(button) {
         difficulty: selects[1].value
     };
 
-    fetch('/trivia', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(newTrivia)
-    })
-        .then(response => response.json())
-        .then(response => {
-            container.setAttribute('data-id', response.id);
-            container.setAttribute('data-question', response.question);
-            container.setAttribute('data-answers', response.answers);
-            container.setAttribute('data-correct-answer', response.correctAnswer);
-            container.setAttribute('data-category', response.category);
-            container.setAttribute('data-difficulty', response.difficulty);
+    if(validateTrivia(newTrivia, container)) {
+        fetch('/trivia', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newTrivia)
+        })
+            .then(response => response.json())
+            .then(response => {
+                container.setAttribute('data-id', response.id);
+                container.setAttribute('data-question', response.question);
+                container.setAttribute('data-answers', response.answers);
+                container.setAttribute('data-correct-answer', response.correctAnswer);
+                container.setAttribute('data-category', response.category);
+                container.setAttribute('data-difficulty', response.difficulty);
 
-            container.innerHTML = `
+                container.innerHTML = `
             <div class="trivia-cell"><span>${response.question}</span></div>
             <div class="trivia-cell"><span>${response.answers}</span></div>
             <div class="trivia-cell"><span>${response.correctAnswer}</span></div>
@@ -259,8 +272,101 @@ function saveNewTrivia(button) {
                 <button class="cancel-button hidden" onclick="cancelEdit(this)">Cancel</button>
             </div>
         `;
-        })
-        .catch(error => {console.error('Failed to add new trivia:', error); removeTriviaEntry(button);});
+            })
+            .catch(error => {
+                console.error('Failed to add new trivia:', error);
+                removeTriviaEntry(button);
+            });
+    }
+}
+
+function validateTrivia(trivia, container) {
+    const questionValidation = container.querySelector('.valid-question');
+    const answersValidation = container.querySelector('.valid-answers');
+    const correctAnswersValidation = container.querySelector('.valid-correct-answer');
+
+    let validQuestion = validateQuestion(trivia, container, questionValidation);
+    let validAnswers = validateAnswers(trivia, container, answersValidation);
+    let validCorrectAnswer = validateCorrectAnswer(trivia, container, correctAnswersValidation);
+
+    return validQuestion && validAnswers && validCorrectAnswer;
+}
+
+function validateQuestion(trivia, container, validation) {
+    if (!trivia.question) {
+        validation.textContent = 'Question cannot be empty.';
+        validation.classList.remove('hidden');
+        return false;
+    }
+
+    if (trivia.question.length < 10) {
+        validation.textContent = 'Question must be at least 10 characters long';
+        validation.classList.remove('hidden');
+        return false;
+    }
+
+    if (!trivia.question.endsWith('?')) {
+        validation.textContent = 'Question must end with \'?\'';
+        validation.classList.remove('hidden');
+        return false;
+    }
+
+    const firstChar = trivia.question.charAt(0);
+    if(firstChar !== firstChar.toUpperCase()) {
+        validation.textContent = 'Question must start with uppercase letter';
+        validation.classList.remove('hidden');
+        return false;
+    }
+
+    if (!validation.classList.contains('hidden')) {
+        validation.classList.add('hidden');
+    }
+    return true;
+}
+
+function validateAnswers(trivia, container, validation) {
+    if(!trivia.answers){
+        validation.textContent = 'Answers cannot be empty.';
+        validation.classList.remove('hidden');
+        return false;
+    }
+
+    if (!trivia.answers.includes(",")) {
+        validation.textContent = 'Provide answers separated by a comma, only one has to be correct';
+        validation.classList.remove('hidden');
+        return false;
+    }
+
+    let answersCount = trivia.answers.split(',').length;
+    if(answersCount !== 4) {
+        validation.textContent = 'Provide exactly 4 answers, only one has to be correct';
+        validation.classList.remove('hidden');
+        return false;
+    }
+
+    if (!validation.classList.contains('hidden')) {
+        validation.classList.add('hidden');
+    }
+    return true;
+}
+
+function validateCorrectAnswer(trivia, container, validation) {
+    if(!trivia.correctAnswer){
+        validation.textContent = 'Correct answer cannot be empty.';
+        validation.classList.remove('hidden');
+        return false;
+    }
+
+    if(!trivia.answers.includes(trivia.correctAnswer)){
+        validation.textContent = 'Correct answer must be present in the answers section';
+        validation.classList.remove('hidden');
+        return false;
+    }
+
+    if (!validation.classList.contains('hidden')) {
+        validation.classList.add('hidden');
+    }
+    return true;
 }
 
 function removeTriviaEntry(button) {
