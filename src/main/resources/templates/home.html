@@ -5,14 +5,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
+    <link th:href="@{/css/styles.css}" rel="stylesheet" />
 </head>
 <body>
-<h1>Welcome!</h1>
+<div id="home">
+    <div sec:authorize="!isAuthenticated()" id="authentication">
+        <a th:href="@{/login}"><button>Log In</button></a>
+        <br />
+        <a th:href="@{/register}"><button>New User?</button></a>
+    </div>
 
-<p>Click <a th:href="@{/hello}">here</a> to see a greeting.</p>
+    <div sec:authorize="isAuthenticated()" id="quiz">
 
-<a sec:authorize="!isAuthenticated()" th:href="@{/login}"><button>Log In</button></a>
-<a sec:authorize="!isAuthenticated()" th:href="@{/register}"><button>Register</button></a>
-<a sec:authorize="hasRole('ADMIN')" th:href="@{/trivia}"><button>Trivia</button></a>
+        <div th:if="${!startedQuiz}">
+            <form th:action="@{/quiz}" th:object="${quiz}" method="post" onsubmit="return startQuiz(this);">
+                <div>
+                    <label for="difficulty">Difficulty:</label>
+                    <select id="difficulty" th:field="*{difficulty}">
+                        <option th:each="difficulty : ${difficulties}" th:value="${difficulty}" th:text="${difficulty}"></option>
+                    </select>
+                </div>
+                <div>
+                    <label>Categories:</label>
+                    <div th:each="category : ${categories}">
+                        <input type="checkbox" th:field="*{categories}" th:value="${category}" />
+                        <span th:text="${category}"></span>
+                    </div>
+                    <p class="err-answer hidden">Please select at least one category</p>
+                </div>
+                <button type="submit">Start QUIZ</button>
+            </form>
+        </div>
+
+        <div th:if="${startedQuiz}">
+            <a  th:href="@{/quiz}"><button>Continue Quiz</button></a>
+        </div>
+
+        <form th:action="@{/logout}" method="post">
+            <input type="submit" value="Sign Out"/>
+        </form>
+
+        <a sec:authorize="hasRole('ADMIN')" th:href="@{/trivia}"><button>Trivia</button></a>
+        <a sec:authorize="hasRole('ADMIN')" th:href="@{/users}"><button>Users</button></a>
+    </div>
+    <div id="leaderboard">
+        <div th:if="${!leaderboard.isEmpty()}" th:each="score: ${leaderboard}">
+            <span th:text="${score.email}" /><span th:text="${score.score}" />
+        </div>
+        <div th:if="${leaderboard.isEmpty()}">
+            <span>No leaderboard entry</span>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" th:src="@{/js/script.js}"></script>
 </body>
 </html>

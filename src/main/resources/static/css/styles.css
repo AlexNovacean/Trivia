@@ -37,3 +37,35 @@
     align-items: center;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
 }
+
+.users-container{
+    display: grid;
+    width: 100%;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.user-cell{
+    padding: 10px;
+}
+
+.question-container {
+    display: none;
+}
+
+.question-container.active {
+    display: block;
+}
+
+.highlight-correct {
+    background-color: #d4edda;
+}
+
+.highlight-incorrect {
+    background-color: #f8d7da;
+}
+
+.err-answer{
+    color: red;
+    font-weight: bold;
+    font-style: italic;
+}

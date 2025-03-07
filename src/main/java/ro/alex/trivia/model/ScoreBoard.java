@@ -5,8 +5,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+import java.util.Objects;
+
 @Entity
-public class ScoreBoard {
+public class ScoreBoard implements Comparable<ScoreBoard> {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
@@ -36,5 +39,22 @@ public class ScoreBoard {
 
     public void setScore(Double score) {
         this.score = score;
+    }
+
+    @Override
+    public int compareTo(ScoreBoard o) {
+        return o.getScore().compareTo(this.getScore());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        ScoreBoard that = (ScoreBoard) o;
+        return Objects.equals(id, that.id) && Objects.equals(email, that.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, email);
     }
 }

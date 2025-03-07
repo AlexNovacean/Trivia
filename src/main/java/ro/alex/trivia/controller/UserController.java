@@ -6,10 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-import ro.alex.trivia.model.ActivationDto;
-import ro.alex.trivia.model.ChangePasswordDto;
-import ro.alex.trivia.model.RegisterDto;
-import ro.alex.trivia.model.TriviaUser;
+import ro.alex.trivia.model.*;
 import ro.alex.trivia.service.ActivationService;
 import ro.alex.trivia.service.UserService;
 
@@ -107,5 +104,15 @@ public class UserController {
         return ACTIVATE;
     }
 
+    @GetMapping("/users")
+    public String users(Model model) {
+        model.addAttribute("users", userService.findAll());
+        return "users";
+    }
 
+    @PatchMapping("/toggleBan")
+    @ResponseBody
+    public void toggleBan(@RequestBody BanRequest banRequest) {
+        userService.toggleBanUser(banRequest);
+    }
 }

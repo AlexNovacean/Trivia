@@ -30,4 +30,5 @@ public class TriviaService {
     public void delete(Integer triviaId) {
         repository.deleteById(triviaId);
     }
+
 }

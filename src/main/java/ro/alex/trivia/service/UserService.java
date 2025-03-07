@@ -1,5 +1,6 @@
 package ro.alex.trivia.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -8,12 +9,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import ro.alex.trivia.model.ChangePasswordDto;
-import ro.alex.trivia.model.RegisterDto;
-import ro.alex.trivia.model.Role;
-import ro.alex.trivia.model.TriviaUser;
+import ro.alex.trivia.model.*;
 import ro.alex.trivia.repository.UserRepository;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -23,12 +22,14 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ActivationService activationService;
+    private final String adminEmail;
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder,
-                       ActivationService activationService) {
+                       ActivationService activationService, @Value("${trivia.admin.email:admin@trivia.ro}") String adminEmail) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.activationService = activationService;
+        this.adminEmail = adminEmail;
     }
 
     @Override
@@ -97,5 +98,19 @@ public class UserService implements UserDetailsService {
         userRepository.save(triviaUser);
 
         return true;
+    }
+
+    public List<TriviaUser> findAll() {
+        return userRepository.findAll().stream().filter(user -> !user.getEmail().equals(adminEmail)).toList();
+    }
+
+    public void toggleBanUser(BanRequest banRequest) {
+        Optional<TriviaUser> optionalUser = userRepository.findByEmail(banRequest.getEmail());
+        if (optionalUser.isPresent()) {
+            TriviaUser triviaUser = optionalUser.get();
+            triviaUser.setAccountLocked(!triviaUser.getAccountLocked());
+            triviaUser.setLockedReason(banRequest.getReason());
+            userRepository.save(triviaUser);
+        }
     }
 }

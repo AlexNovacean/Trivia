@@ -15,7 +15,6 @@ public class TriviaUser {
     private String email;
     private String password;
     private Role role;
-    private Double score;
     private Boolean accountLocked;
     private String lockedReason;
     private Boolean accountDisabled;
@@ -50,14 +49,6 @@ public class TriviaUser {
 
     public void setRole(Role role) {
         this.role = role;
-    }
-
-    public Double getScore() {
-        return score;
-    }
-
-    public void setScore(Double score) {
-        this.score = score;
     }
 
     public Boolean getAccountLocked() {

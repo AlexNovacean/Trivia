@@ -373,3 +373,159 @@ function removeTriviaEntry(button) {
     const container = button.closest('.trivia-container');
     container.remove();
 }
+
+function toggleBanUser(button){
+    const buttonText = button.textContent;
+    const container = button.closest('.users-container');
+    const userEmail = container.getAttribute('data-id');
+    const banned = buttonText === 'Unban User';
+    const reasonText = container.querySelector('#reason');
+    const reasonInput = container.querySelector('#ban-reason');
+    const reason = reasonInput ? reasonInput.value : '';
+
+    if (!reason && !banned) {
+        container.querySelector('.err-answer').classList.remove('hidden');
+        return;
+    }
+
+    if(!container.querySelector('.err-answer').classList.contains('hidden')) {
+        container.querySelector('.err-answer').classList.add('hidden');
+    }
+
+    fetch('/toggleBan', {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({email: userEmail, reason: reason})
+    })
+        .then(() => {
+            button.textContent = buttonText === 'Ban User' ? 'Unban User' : 'Ban User';
+            if (banned) {
+                reasonText.insertAdjacentHTML('beforebegin', `<input id="ban-reason" type="text" placeholder="Ban reason">`);
+                reasonText.remove();
+            } else {
+                reasonInput.insertAdjacentHTML('beforebegin', `<span id="reason">${reason}</span>`);
+                reasonInput.remove();
+            }
+        })
+        .catch(error => console.error('Failed to toggle ban user:', error));
+}
+
+let currentQuestionIndex = 0;
+const questionContainers = document.querySelectorAll('.question-container');
+
+function navigate(direction) {
+    questionContainers[currentQuestionIndex].classList.remove('active');
+    currentQuestionIndex += direction;
+    handleNavigationButtons();
+    questionContainers[currentQuestionIndex].classList.add('active');
+    if (!questionContainers[currentQuestionIndex].querySelector('.err-answer').classList.contains('hidden')) {
+        questionContainers[currentQuestionIndex].querySelector('.err-answer').classList.add('hidden');
+    }
+}
+
+function handleNavigationButtons(){
+    if (currentQuestionIndex === 0) {
+        document.querySelector('#prev-btn').disabled = true;
+    }
+    if (currentQuestionIndex > 0) {
+        document.querySelector('#prev-btn').disabled = false;
+    }
+    if (currentQuestionIndex === questionContainers.length - 1) {
+        document.querySelector('#next-btn').disabled = true;
+    }
+    if (currentQuestionIndex < questionContainers.length - 1) {
+        document.querySelector('#next-btn').disabled = false;
+    }
+}
+
+function submitAnswers() {
+    const results = {};
+    Array.from(questionContainers).forEach(container => {
+        const questionId = container.getAttribute('data-question-id');
+        const selectedAnswer = container.querySelector(`input[name='answer-${questionId}']:checked`);
+        if (selectedAnswer) {
+            results[questionId] = selectedAnswer.value;
+        }
+    });
+
+    if (Object.keys(results).length !== questionContainers.length) {
+        let shownError = false;
+        Array.from(questionContainers).forEach((container, index) => {
+            let errAnswer = container.querySelector('.err-answer');
+            const questionId = container.getAttribute('data-question-id');
+            const selectedAnswer = container.querySelector(`input[name='answer-${questionId}']:checked`);
+            container.classList.remove('active');
+            if (selectedAnswer) {
+                if (!errAnswer.classList.contains('hidden')) {
+                    errAnswer.classList.add('hidden');
+                }
+            } else if (!shownError) {
+                currentQuestionIndex = index;
+                handleNavigationButtons();
+                shownError = true;
+                container.classList.add('active');
+                errAnswer.classList.remove('hidden');
+            }
+        });
+    } else {
+        fetch('/answer-quiz', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(results)
+        })
+            .then(response => response.json())
+            .then(response => {
+                document.getElementById('quiz').style.display = 'block'; // Show the quiz
+                displayAnswers(response, results);
+            })
+            .catch(error => console.error('Error:', error));
+    }
+}
+
+function displayAnswers(response) {
+    Array.from(questionContainers).forEach(container => {
+        container.classList.add('active');
+        if (!container.querySelector('.err-answer').classList.contains('hidden')) {
+            container.querySelector('.err-answer').classList.add('hidden');
+        }
+
+        const questionId = container.getAttribute('data-question-id');
+        const correctAnswer = response.answers[questionId];
+
+        container.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.disabled = true;
+            const label = radio.nextElementSibling;
+
+            if (radio.value.trim() === correctAnswer) {
+                label.insertAdjacentHTML('beforeend', ' <span class="highlight-correct">Correct</span>');
+            }
+
+            if (radio.checked && radio.value.trim() !== correctAnswer) {
+                label.insertAdjacentHTML('beforeend', ' <span class="highlight-incorrect">Wrong</span>');
+            }
+        });
+    });
+
+    document.querySelector('#prev-btn').classList.add('hidden');
+    document.querySelector('#next-btn').classList.add('hidden');
+    document.querySelector('#submit-btn').classList.add('hidden');
+    document.querySelector('#home-btn').classList.remove('hidden');
+}
+
+function startQuiz(form){
+    let checked = false;
+    Array.from(form.querySelectorAll('input[type="checkbox"]')).forEach(checkbox => {
+        if (checkbox.checked) {
+            checked = true;
+        }
+    })
+    if (!checked) {
+        form.querySelector('.err-answer').classList.remove('hidden');
+        return false;
+    }
+    return true;
+}

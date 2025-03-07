@@ -1,9 +1,6 @@
 package ro.alex.trivia.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,6 +19,9 @@ public class TriviaQuestion {
     private String correctAnswer;
     private TriviaCategory category;
     private TriviaDifficulty difficulty;
+
+    @ManyToMany(mappedBy = "questions")
+    private List<Quiz> quizzes;
 
     public Integer getId() {
         return id;
@@ -73,5 +73,13 @@ public class TriviaQuestion {
 
     public List<String> answers(){
         return Arrays.stream(answers.split(",")).toList();
+    }
+
+    public List<Quiz> getQuizzes() {
+        return quizzes;
+    }
+
+    public void setQuizzes(List<Quiz> quizzes) {
+        this.quizzes = quizzes;
     }
 }

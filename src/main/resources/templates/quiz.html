@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Quiz</title>
+    <link th:href="@{/css/styles.css}" rel="stylesheet" />
+</head>
+<body>
+<div id="quiz">
+    <div id="questions-container" th:each="question, iterStat : ${quiz.questions}">
+        <div class="question-container"
+             th:data-question-id="${question.id}"
+             th:class="${iterStat.index == 0 ? 'question-container active' : 'question-container'}" >
+            <h2 th:text="${question.question}"></h2>
+            <p class="err-answer hidden">Please answer all questions before submitting the answers</p>
+            <div th:each="answer : ${#strings.arraySplit(question.answers, ',')}">
+                <input type="radio" th:name="'answer-'+${question.id}" th:value="${answer}" />
+                <label th:text="${answer}"></label><br/>
+            </div>
+        </div>
+    </div>
+
+    <button id="prev-btn" disabled onclick="navigate(-1)">Left</button>
+    <button id="next-btn" onclick="navigate(1)">Right</button>
+    <button id="submit-btn" onclick="submitAnswers()">Submit</button>
+    <a class="hidden" id="home-btn" th:href="@{/home}"><button>HOME</button></a>
+</div>
+<script type="text/javascript" th:src="@{/js/script.js}"></script>
+</body>
+</html>

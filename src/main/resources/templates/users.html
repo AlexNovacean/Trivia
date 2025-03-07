@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users</title>
+    <link th:href="@{/css/styles.css}" rel="stylesheet" />
+</head>
+<body>
+<div class="users-container">
+        <div class="user-cell"><h4>Email</h4></div>
+        <div class="user-cell"><h4>Account locked reasons</h4></div>
+        <div class="user-cell"><h4>Actions</h4></div>
+</div>
+<div class="users-container" th:each="user:${users}"
+     th:data-id="${user.email}">
+    <div class="user-cell"><span th:text="${user.email}"></span></div>
+    <div class="user-cell">
+        <span id="reason" th:if="${user.accountLocked}" th:text="${user.lockedReason}" />
+        <input id="ban-reason" th:if="${!user.accountLocked}" type="text" placeholder="Ban reason">
+        <br />
+        <p class="err-answer hidden">Cannot ban user without reason</p>
+    </div>
+    <div class="trivia-cell">
+        <button class="ban-button" th:text="${user.accountLocked == true?'Unban User':'Ban User'}" onclick="toggleBanUser(this)">Ban User</button>
+    </div>
+</div>
+<a th:href="@{/home}"><button>HOME</button></a>
+<script type="text/javascript" th:src="@{/js/script.js}"></script>
+</body>
+</html>

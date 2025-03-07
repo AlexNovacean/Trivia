@@ -16,4 +16,5 @@ public interface UserRepository extends JpaRepository<TriviaUser, Integer> {
     @Modifying
     @Query("update TriviaUser t set t.accountDisabled=false where t.email=?1")
     int activateUser(String email);
+
 }
