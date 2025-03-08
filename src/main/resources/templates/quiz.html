@@ -5,6 +5,7 @@
     <link th:href="@{/css/styles.css}" rel="stylesheet" />
 </head>
 <body>
+<div th:replace="home :: header"></div>
 <div id="quiz">
     <div id="questions-container" th:each="question, iterStat : ${quiz.questions}">
         <div class="question-container"
@@ -22,7 +23,6 @@
     <button id="prev-btn" disabled onclick="navigate(-1)">Left</button>
     <button id="next-btn" onclick="navigate(1)">Right</button>
     <button id="submit-btn" onclick="submitAnswers()">Submit</button>
-    <a class="hidden" id="home-btn" th:href="@{/home}"><button>HOME</button></a>
 </div>
 <script type="text/javascript" th:src="@{/js/script.js}"></script>
 </body>

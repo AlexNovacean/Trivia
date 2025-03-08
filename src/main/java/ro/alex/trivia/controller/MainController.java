@@ -4,12 +4,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ro.alex.trivia.model.*;
+import ro.alex.trivia.model.Quiz;
+import ro.alex.trivia.model.QuizDto;
+import ro.alex.trivia.model.QuizResult;
 import ro.alex.trivia.service.QuizService;
-import ro.alex.trivia.service.UserService;
 
 import java.security.Principal;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 
@@ -18,7 +18,7 @@ public class MainController {
 
     private final QuizService quizService;
 
-    public MainController(QuizService quizService, UserService userService) {
+    public MainController(QuizService quizService) {
         this.quizService = quizService;
     }
 
@@ -30,8 +30,6 @@ public class MainController {
             model.addAttribute("startedQuiz", false);
             model.addAttribute("quiz", new QuizDto());
         }
-        model.addAttribute("categories", Arrays.stream(TriviaCategory.values()).map(TriviaCategory::name).toList());
-        model.addAttribute("difficulties", Arrays.stream(TriviaDifficulty.values()).map(TriviaDifficulty::name).toList());
         model.addAttribute("leaderboard", quizService.getLeaderBoard());
         return "home";
     }
@@ -53,7 +51,7 @@ public class MainController {
     @PostMapping("/answer-quiz")
     @ResponseBody
     public QuizResult answerQuiz(@RequestBody Map<Integer, String> answers, Authentication auth) {
-        return quizService.resolve(auth.getName(), answers);
+        return quizService.solveQuiz(auth.getName(), answers);
     }
 
     @GetMapping("/login")

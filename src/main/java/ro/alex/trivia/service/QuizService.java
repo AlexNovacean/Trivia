@@ -4,8 +4,8 @@ import org.apache.commons.math3.util.Precision;
 import org.springframework.stereotype.Service;
 import ro.alex.trivia.model.*;
 import ro.alex.trivia.repository.QuizRepository;
-import ro.alex.trivia.repository.ScoreBoardRepository;
 import ro.alex.trivia.repository.TriviaRepository;
+import ro.alex.trivia.repository.UserRepository;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -21,13 +21,12 @@ public class QuizService {
     private static final double WRONG_ANSWER_POINTS_WEIGHT = 0.5;
     private final QuizRepository quizRepository;
     private final TriviaRepository triviaRepository;
-    private final ScoreBoardRepository scoreBoardRepository;
-    private final Random rand = new Random();
+    private final UserRepository userRepository;
 
-    public QuizService(QuizRepository quizRepository, TriviaRepository triviaRepository, ScoreBoardRepository scoreBoardRepository) {
+    public QuizService(QuizRepository quizRepository, TriviaRepository triviaRepository, UserRepository userRepository) {
         this.quizRepository = quizRepository;
         this.triviaRepository = triviaRepository;
-        this.scoreBoardRepository = scoreBoardRepository;
+        this.userRepository = userRepository;
     }
 
     public Quiz findStartedQuiz(String email){
@@ -67,14 +66,18 @@ public class QuizService {
         };
     }
 
-    public List<ScoreBoard> getLeaderBoard() {
-        return scoreBoardRepository.findAll().stream().sorted().toList();
+    public List<Leaderboard> getLeaderBoard() {
+        return userRepository.findAllByScoreNotNull().stream()
+                .map(user -> new Leaderboard(user.getDisplayName(), user.getScore(), user.getAvatar()))
+                .sorted()
+                .toList();
     }
 
-    public QuizResult resolve(String email, Map<Integer, String> answers) {
+    public QuizResult solveQuiz(String email, Map<Integer, String> answers) {
         QuizResult result = new QuizResult();
         double score = 0.0;
         Quiz quiz = quizRepository.findByEmailAndScoreNull(email).orElseThrow();
+        TriviaUser triviaUser = userRepository.findByEmail(email).orElseThrow();
         List<TriviaQuestion> questions = quiz.getQuestions();
 
         for(TriviaQuestion question : questions) {
@@ -85,25 +88,18 @@ public class QuizService {
             }
         }
 
-        score = Precision.round(score, 2);
+        double checkedScore = Math.max(0, score);
+        triviaUser.setScore(Precision.round(
+                Objects.nonNull(triviaUser.getScore()) ?
+                        Math.max(0, triviaUser.getScore() + score) :
+                        checkedScore
+                , 2));
+        userRepository.save(triviaUser);
 
-        Optional<ScoreBoard> optionalScoreBoard = scoreBoardRepository.findByEmail(email);
-        if (optionalScoreBoard.isPresent()) {
-            ScoreBoard scoreBoard = optionalScoreBoard.get();
-            double newScore = scoreBoard.getScore() + score;
-            scoreBoard.setScore(newScore < 0 ? 0 : newScore);
-            scoreBoardRepository.save(scoreBoard);
-        } else {
-            ScoreBoard newScoreBoard = new ScoreBoard();
-            newScoreBoard.setEmail(email);
-            newScoreBoard.setScore(score < 0 ? 0 : score);
-            scoreBoardRepository.save(newScoreBoard);
-        }
-
-        quiz.setScore(score < 0 ? 0 : score);
+        quiz.setScore(Precision.round(checkedScore, 2));
         quizRepository.save(quiz);
 
-        result.setScore(score < 0 ? 0 : score);
+        result.setScore(checkedScore);
         result.setAnswers(
                 questions.stream().collect(Collectors.toMap(TriviaQuestion::getId, TriviaQuestion::getCorrectAnswer))
         );

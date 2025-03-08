@@ -1,6 +1,8 @@
 package ro.alex.trivia.controller;
 
 import jakarta.validation.Valid;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -10,7 +12,10 @@ import ro.alex.trivia.model.*;
 import ro.alex.trivia.service.ActivationService;
 import ro.alex.trivia.service.UserService;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 @Controller
 public class UserController {
@@ -27,8 +32,21 @@ public class UserController {
 
     @GetMapping("/register")
     public String register(Model model) {
+        model.addAttribute("avatars", getAvatars());
         model.addAttribute(new RegisterDto());
         return REGISTER;
+    }
+
+    private static List<String> getAvatars() {
+        try {
+            PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+            Resource[] resources = resolver.getResources("classpath:static/avatar/*.png");
+            return Stream.of(resources)
+                    .map(resource -> "/avatar/" + resource.getFilename())
+                    .toList();
+        } catch (IOException e) {
+            return List.of();
+        }
     }
 
     @PostMapping("/register")
@@ -43,6 +61,7 @@ public class UserController {
         }
 
         if(bindingResult.hasErrors()) {
+            model.addAttribute("avatars", getAvatars());
             return REGISTER;
         }
 
@@ -54,7 +73,8 @@ public class UserController {
             return ACTIVATE;
         }
 
-        return REGISTER;
+        model.addAttribute("registrationError", true);
+        return "home";
     }
 
     @GetMapping("/password")

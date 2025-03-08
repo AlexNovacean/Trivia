@@ -8,7 +8,25 @@
     <link th:href="@{/css/styles.css}" rel="stylesheet" />
 </head>
 <body>
+
+
+<div class="header" th:fragment="header">
+    <a th:href="@{/home}"><button>HOME</button></a>
+    <a sec:authorize="isAuthenticated()" th:href="@{/trivia}"><button>Trivia</button></a>
+    <a sec:authorize="hasRole('ADMIN')" th:href="@{/users}"><button>Users</button></a>
+    <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post">
+        <input type="submit" value="Sign Out"/>
+    </form>
+</div>
+
 <div id="home">
+<!--    TODO MAKE THIS ACCORDION-->
+    <div sec:authorize="isAuthenticated()" id="categories" th:each="category : ${T(ro.alex.trivia.model.TriviaCategory).values()}">
+        <span th:text="${category}" /><span th:text="${category.description}" />
+    </div>
+
+
+    <div th:if="${registrationError}">Could not complete registration due to error. Please try again</div>
     <div sec:authorize="!isAuthenticated()" id="authentication">
         <a th:href="@{/login}"><button>Log In</button></a>
         <br />
@@ -16,18 +34,18 @@
     </div>
 
     <div sec:authorize="isAuthenticated()" id="quiz">
-
         <div th:if="${!startedQuiz}">
             <form th:action="@{/quiz}" th:object="${quiz}" method="post" onsubmit="return startQuiz(this);">
+<!--                TODO make start quiz steps slide one after the other Start Quiz -> Difficulty -> Category -> Start(request here)-->
                 <div>
                     <label for="difficulty">Difficulty:</label>
                     <select id="difficulty" th:field="*{difficulty}">
-                        <option th:each="difficulty : ${difficulties}" th:value="${difficulty}" th:text="${difficulty}"></option>
+                        <option th:each="difficulty : ${T(ro.alex.trivia.model.TriviaDifficulty).values()}" th:value="${difficulty}" th:text="${difficulty}"></option>
                     </select>
                 </div>
                 <div>
                     <label>Categories:</label>
-                    <div th:each="category : ${categories}">
+                    <div th:each="category : ${T(ro.alex.trivia.model.TriviaCategory).values()}">
                         <input type="checkbox" th:field="*{categories}" th:value="${category}" />
                         <span th:text="${category}"></span>
                     </div>
@@ -36,26 +54,27 @@
                 <button type="submit">Start QUIZ</button>
             </form>
         </div>
-
         <div th:if="${startedQuiz}">
             <a  th:href="@{/quiz}"><button>Continue Quiz</button></a>
         </div>
-
-        <form th:action="@{/logout}" method="post">
-            <input type="submit" value="Sign Out"/>
-        </form>
-
-        <a sec:authorize="hasRole('ADMIN')" th:href="@{/trivia}"><button>Trivia</button></a>
-        <a sec:authorize="hasRole('ADMIN')" th:href="@{/users}"><button>Users</button></a>
     </div>
+
+
     <div id="leaderboard">
-        <div th:if="${!leaderboard.isEmpty()}" th:each="score: ${leaderboard}">
-            <span th:text="${score.email}" /><span th:text="${score.score}" />
+        <div th:if="${!leaderboard.isEmpty()}" th:each="lb, iter: ${leaderboard}">
+            <img th:src="@{${lb.avatar}}" alt="user avatar" />
+            <span th:text="${lb.displayName}" />
+            <span th:text="${lb.score}" />
+            <img th:if="${iter.index == 0}" th:src="@{/trophy/one.png}" alt="first place medal" />
+            <img th:if="${iter.index == 1}" th:src="@{/trophy/two.png}" alt="second place medal" />
+            <img th:if="${iter.index == 2}" th:src="@{/trophy/three.png}" alt="third place medal" />
         </div>
         <div th:if="${leaderboard.isEmpty()}">
             <span>No leaderboard entry</span>
         </div>
     </div>
+
+
 </div>
 <script type="text/javascript" th:src="@{/js/script.js}"></script>
 </body>

@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import ro.alex.trivia.model.TriviaUser;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -17,4 +18,5 @@ public interface UserRepository extends JpaRepository<TriviaUser, Integer> {
     @Query("update TriviaUser t set t.accountDisabled=false where t.email=?1")
     int activateUser(String email);
 
+    List<TriviaUser> findAllByScoreNotNull();
 }

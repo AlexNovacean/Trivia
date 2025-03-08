@@ -5,17 +5,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
+    <link th:href="@{/css/styles.css}" rel="stylesheet" />
 </head>
 <body>
+<div th:replace="home :: header"></div>
 <div>
     <h1>Register</h1>
     <form method="post" action="/register" th:object="${registerDto}">
 
         <div>
+            <label for="displayName">Email</label>
+            <div>
+                <input th:field="*{displayName}" id="displayName" placeholder="Display Name" />
+                <p th:if="${#fields.hasErrors('displayName')}" th:errorclass="error-register" th:errors="*{displayName}"></p>
+            </div>
+        </div>
+
+        <div>
             <label for="email">Email</label>
             <div>
                 <input th:field="*{email}" id="email" placeholder="Email" />
-                <p th:if="${#fields.hasErrors('email')}" th:errorclass="error" th:errors="*{email}"></p>
+                <p th:if="${#fields.hasErrors('email')}" th:errorclass="error-register" th:errors="*{email}"></p>
             </div>
         </div>
 
@@ -23,9 +33,21 @@
             <label for="password">Password</label>
             <div>
                 <input th:field="*{password}" id="password" placeholder="Password" />
-                <p th:if="${#fields.hasErrors('password')}" th:errorclass="error" th:errors="*{password}"></p>
+                <p th:if="${#fields.hasErrors('password')}" th:errorclass="error-register" th:errors="*{password}"></p>
             </div>
         </div>
+
+        <div>
+            <label for="avatar">Avatar</label>
+            <div>
+                <input type="hidden" th:field="*{avatarName}" id="avatar" />
+                <p th:if="${#fields.hasErrors('avatarName')}" th:errorclass="error-register" th:errors="*{avatarName}"></p>
+                <div>
+                    <button type="button" class="chose-avatar" onclick="openAvatarModal()">Choose Avatar</button>
+                </div>
+            </div>
+        </div>
+
         <div>
             <div>
                 <button type="submit">Register</button>
@@ -34,9 +56,28 @@
                 <a th:href="@{/home}">Cancel</a>
             </div>
         </div>
-
     </form>
-
 </div>
+
+<div id="avatarModal" class="modal hidden">
+    <div class="modal-content">
+        <div class="avatar-grid">
+            <div th:each="avatar : ${avatars}">
+                <img th:src="@{${avatar}}" th:alt="${avatar}" onclick="selectAvatar(this.src)" />
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" th:src="@{/js/script.js}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        let avatarButton = document.querySelector(".chose-avatar");
+        let avatarInput = document.querySelector("#avatar");
+        if (avatarInput.value) {
+            avatarButton.style.backgroundImage = `url(${avatarInput.value})`;
+            avatarButton.classList.add('avatar-chosen');
+        }
+    });
+</script>
 </body>
 </html>

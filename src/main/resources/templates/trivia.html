@@ -1,7 +1,6 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="https://www.thymeleaf.org"
-      lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +8,8 @@
     <link th:href="@{/css/styles.css}" rel="stylesheet" />
 </head>
 <body>
-<div class="trivia-container">
+<div th:replace="home :: header"></div>
+<div class="trivia-container" sec:authorize="hasRole('ADMIN')">
     <div class="trivia-cell"><h4>Question</h4></div>
     <div class="trivia-cell"><h4>Answers</h4></div>
     <div class="trivia-cell"><h4>Correct Answer</h4></div>
@@ -17,23 +17,34 @@
     <div class="trivia-cell"><h4>Difficulty</h4></div>
     <div class="trivia-cell"><h4>Actions</h4></div>
 </div>
-<div th:each="q: ${questions}" class="trivia-container"
-     th:data-id="${q.id}"
-     th:data-question="${q.question}"
-     th:data-answers="${q.answers}"
-     th:data-correct-answer="${q.correctAnswer}"
-     th:data-category="${q.category}"
-     th:data-difficulty="${q.difficulty}">
-    <div class="trivia-cell"><span class="question" th:text="${q.question}"></span></div>
-    <div class="trivia-cell"><span class="answers" th:text="${q.answers}"></span></div>
-    <div class="trivia-cell"><span class="correctAnswers" th:text="${q.correctAnswer}"></span></div>
-    <div class="trivia-cell"><span class="category" th:text="${q.category}"></span></div>
-    <div class="trivia-cell"><span class="difficulty" th:text="${q.difficulty}"></span></div>
-    <div class="trivia-cell">
-        <button class="edit-button" onclick="toggleEditMode(this)">Edit</button>
-        <button class="delete-button" onclick="deleteTrivia(this)">Delete</button>
-        <button class="save-button hidden" onclick="saveTrivia(this)">Save</button>
-        <button class="cancel-button hidden" onclick="cancelEdit(this)">Cancel</button>
+<div class="admin-trivia" sec:authorize="hasRole('ADMIN')">
+    <div th:each="q: ${questions}" class="trivia-container"
+         th:data-id="${q.id}"
+         th:data-question="${q.question}"
+         th:data-answers="${q.answers}"
+         th:data-correct-answer="${q.correctAnswer}"
+         th:data-category="${q.category}"
+         th:data-difficulty="${q.difficulty}">
+        <div class="trivia-cell"><span class="question" th:text="${q.question}"></span></div>
+        <div class="trivia-cell"><span class="answers" th:text="${q.answers}"></span></div>
+        <div class="trivia-cell"><span class="correctAnswers" th:text="${q.correctAnswer}"></span></div>
+        <div class="trivia-cell"><span class="category" th:text="${q.category}"></span></div>
+        <div class="trivia-cell"><span class="difficulty" th:text="${q.difficulty}"></span></div>
+        <div class="trivia-cell">
+            <button class="edit-button" onclick="toggleEditMode(this)">Edit</button>
+            <button class="delete-button" onclick="deleteTrivia(this)">Delete</button>
+            <button class="save-button hidden" onclick="saveTrivia(this)">Save</button>
+            <button class="cancel-button hidden" onclick="cancelEdit(this)">Cancel</button>
+        </div>
+    </div>
+</div>
+<div class="user-trivia" sec:authorize="hasRole('USER')">
+    <div th:each="q: ${questions}">
+<!--        TODO MAKE THIS FLIP CARD-->
+        <div class="trivia-cell"><span class="question" th:text="${q.question}"></span></div>
+        <div class="trivia-cell"><span class="correctAnswers" th:text="${q.correctAnswer}"></span></div>
+        <div class="trivia-cell"><span class="category" th:text="${q.category}"></span></div>
+        <div class="trivia-cell"><span class="difficulty" th:text="${q.difficulty}"></span></div>
     </div>
 </div>
 <button th:data-categories="${categories}" th:data-difficulties="${difficulties}" class="add-trivia-button" onclick="addNewTriviaEntry()">+</button>

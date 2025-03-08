@@ -7,6 +7,7 @@
     <link th:href="@{/css/styles.css}" rel="stylesheet" />
 </head>
 <body>
+<div th:replace="home :: header"></div>
 
 <div th:if="${failed}">
     Activation failed, a new activation code was generated and sent to <span th:text="${activationDto.email} ?: 'your email.'" />
@@ -40,7 +41,7 @@
     <br />
     <span class="generate-code-timer" >Generate Again In: </span>
 </p>
-<button id="generate-button" type="button" th:data-email="${activationDto.email}" th:onclick="generateActivationCode(this.getAttribute('data-email'))">Generate code</button>
+<button id="generate-button" type="button" th:data-email="${activationDto.email}" onclick="generateActivationCode(this)">Generate code</button>
 <a th:href="@{/home}"><button>Home</button></a>
 <script type="text/javascript" th:src="@{/js/script.js}"></script>
 </body>

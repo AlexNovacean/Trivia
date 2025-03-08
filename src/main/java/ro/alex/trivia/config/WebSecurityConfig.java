@@ -7,7 +7,6 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -28,12 +27,12 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/", "/home", "/login/**", "/register", "/activate", "/password", "/css/**","/js/**").permitAll()
-                        .requestMatchers("/trivia/**").hasRole("ADMIN")
+                        .requestMatchers("/", "/home", "/login/**", "/register", "/activate", "/password").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/avatar/**", "/trophy/**", "/favicon.ico").permitAll()
                         .anyRequest().authenticated())
-                .formLogin(form -> form.loginPage("/login").defaultSuccessUrl("/home").failureHandler(authenticationFailureService))
+                .formLogin(form -> form.loginPage("/login").defaultSuccessUrl("/home", true).failureHandler(authenticationFailureService))
                 .httpBasic(Customizer.withDefaults())
-                .logout(LogoutConfigurer::permitAll)
+                .logout(logoutConf -> logoutConf.logoutSuccessUrl("/home"))
                 .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable);
         return http.build();

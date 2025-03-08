@@ -1,9 +1,6 @@
 package ro.alex.trivia.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.Objects;
 
@@ -14,7 +11,10 @@ public class TriviaUser {
     private Integer id;
     private String email;
     private String password;
+    private String displayName;
+    private String avatar;
     private Role role;
+    private Double score;
     private Boolean accountLocked;
     private String lockedReason;
     private Boolean accountDisabled;
@@ -43,12 +43,36 @@ public class TriviaUser {
         this.password = password;
     }
 
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
     public Role getRole() {
         return role;
     }
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public Double getScore() {
+        return score;
+    }
+
+    public void setScore(Double score) {
+        this.score = score;
     }
 
     public Boolean getAccountLocked() {

@@ -1,3 +1,13 @@
+.header *{
+    display: inline-block;
+    padding: 20px;
+    margin: 0 10px;
+}
+
+.header {
+    padding: 20px;
+}
+
 .generate-code {
     color: brown;
 }
@@ -38,10 +48,10 @@
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
 }
 
-.users-container{
+.users-container {
     display: grid;
     width: 100%;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(6, 1fr);
 }
 
 .user-cell{
@@ -68,4 +78,84 @@
     color: red;
     font-weight: bold;
     font-style: italic;
+}
+
+.error-register{
+    color: red;
+    font-weight: bold;
+    font-style: italic;
+}
+
+.modal {
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0); /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    border-radius: 5px;
+    width: 40%; /* Could be more or less, depending on screen size */
+}
+
+.avatar-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.avatar-grid img {
+    max-width: 100%;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;  /* Adds a transition effect */
+}
+
+.avatar-grid img:hover {
+    transform: scale(1.1);  /* Scale the image to 110% of its size */
+}
+
+.avatar-grid div {
+    margin: auto;
+}
+
+.chose-avatar {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 4vw; /* width relative to viewport width */
+    height: 4vw; /* height should be equal to width for a circle */
+    font-size: 1vw; /* font size relative to viewport width */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.avatar-chosen {
+    background-size: cover;
+    background-position: center;
+    background-color: transparent;
+    color: transparent;
+}
+
+.chose-avatar:hover {
+    transform: scale(1.1);
+}
+
+@media (max-width: 600px) {
+    .chose-avatar {
+        width: 20vw;
+        height: 20vw;
+        font-size: 4vw;
+    }
 }

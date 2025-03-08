@@ -1,4 +1,5 @@
-function generateActivationCode(email){
+function generateActivationCode(button){
+    let email = button.getAttribute('data-email');
   fetch('/activate', {
         method: "PATCH",
         header: {
@@ -528,4 +529,35 @@ function startQuiz(form){
         return false;
     }
     return true;
+}
+
+
+const avatarModal = document.querySelector('#avatarModal');
+
+window.onclick = function(event) {
+    if (event.target === avatarModal) {
+        closeAvatarModal();
+    }
+};
+
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        closeAvatarModal();
+    }
+});
+
+function openAvatarModal() {
+    avatarModal.classList.remove('hidden');
+}
+
+function closeAvatarModal() {
+    avatarModal.classList.add('hidden')
+}
+
+function selectAvatar(src) {
+    document.querySelector('#avatar').value = src.substring(src.indexOf('/avatar'));
+    let avatarButton = document.querySelector('.chose-avatar');
+    avatarButton.style.backgroundImage = `url(${src})`;
+    avatarButton.classList.add('avatar-chosen');
+    closeAvatarModal();
 }

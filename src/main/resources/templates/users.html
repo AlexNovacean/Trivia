@@ -9,14 +9,21 @@
     <link th:href="@{/css/styles.css}" rel="stylesheet" />
 </head>
 <body>
+<div th:replace="home :: header"></div>
 <div class="users-container">
+        <div class="user-cell"><h4>#</h4></div>
+        <div class="user-cell"><h4>Display Name</h4></div>
         <div class="user-cell"><h4>Email</h4></div>
+        <div class="user-cell"><h4>Score</h4></div>
         <div class="user-cell"><h4>Account locked reasons</h4></div>
         <div class="user-cell"><h4>Actions</h4></div>
 </div>
 <div class="users-container" th:each="user:${users}"
      th:data-id="${user.email}">
+    <div class="user-cell"><img th:src="@{${user.avatar}}" th:alt="${user.avatar}" /></div>
+    <div class="user-cell"><span th:text="${user.displayName}"></span></div>
     <div class="user-cell"><span th:text="${user.email}"></span></div>
+    <div class="user-cell"><span th:text="${user.score}"></span></div>
     <div class="user-cell">
         <span id="reason" th:if="${user.accountLocked}" th:text="${user.lockedReason}" />
         <input id="ban-reason" th:if="${!user.accountLocked}" type="text" placeholder="Ban reason">
@@ -27,7 +34,6 @@
         <button class="ban-button" th:text="${user.accountLocked == true?'Unban User':'Ban User'}" onclick="toggleBanUser(this)">Ban User</button>
     </div>
 </div>
-<a th:href="@{/home}"><button>HOME</button></a>
 <script type="text/javascript" th:src="@{/js/script.js}"></script>
 </body>
 </html>
