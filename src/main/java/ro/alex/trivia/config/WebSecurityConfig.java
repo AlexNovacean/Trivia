@@ -17,6 +17,7 @@ import ro.alex.trivia.service.AuthenticationFailureService;
 @EnableWebSecurity
 public class WebSecurityConfig {
 
+    private static final String HOME = "/home";
     private final AuthenticationFailureService authenticationFailureService;
 
     public WebSecurityConfig(AuthenticationFailureService authenticationFailureService) {
@@ -27,12 +28,12 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/", "/home", "/login/**", "/register", "/activate", "/password").permitAll()
+                        .requestMatchers("/", HOME, "/login/**", "/register", "/activate", "/password","/joke").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/avatar/**", "/trophy/**", "/favicon.ico").permitAll()
                         .anyRequest().authenticated())
-                .formLogin(form -> form.loginPage("/login").defaultSuccessUrl("/home", true).failureHandler(authenticationFailureService))
+                .formLogin(form -> form.loginPage("/login").defaultSuccessUrl(HOME, true).failureHandler(authenticationFailureService))
                 .httpBasic(Customizer.withDefaults())
-                .logout(logoutConf -> logoutConf.logoutSuccessUrl("/home"))
+                .logout(logoutConf -> logoutConf.logoutSuccessUrl(HOME))
                 .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable);
         return http.build();

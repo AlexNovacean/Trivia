@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ro.alex.trivia.model.Quiz;
 import ro.alex.trivia.model.QuizDto;
 import ro.alex.trivia.model.QuizResult;
+import ro.alex.trivia.service.JokeService;
 import ro.alex.trivia.service.QuizService;
 
 import java.security.Principal;
@@ -14,12 +15,14 @@ import java.util.Map;
 import java.util.Objects;
 
 @Controller
-public class MainController {
+public class HomeController {
 
     private final QuizService quizService;
+    private final JokeService jokeService;
 
-    public MainController(QuizService quizService) {
+    public HomeController(QuizService quizService, JokeService jokeService) {
         this.quizService = quizService;
+        this.jokeService = jokeService;
     }
 
     @GetMapping({"", "/", "/home"})
@@ -57,5 +60,11 @@ public class MainController {
     @GetMapping("/login")
     public String login() {
         return "login";
+    }
+
+    @GetMapping("/joke")
+    @ResponseBody
+    public String getJoke(){
+        return jokeService.getJoke();
     }
 }

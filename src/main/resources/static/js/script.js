@@ -530,19 +530,22 @@ function startQuiz(form){
     }
     return true;
 }
-
-
 const avatarModal = document.querySelector('#avatarModal');
+const jokeModal = document.querySelector('#jokeModal');
 
 window.onclick = function(event) {
     if (event.target === avatarModal) {
         closeAvatarModal();
+    }
+    if (event.target === jokeModal) {
+        closeJokeModal();
     }
 };
 
 document.addEventListener('keydown', function(event) {
     if (event.key === 'Escape') {
         closeAvatarModal();
+        closeJokeModal();
     }
 });
 
@@ -551,6 +554,7 @@ function openAvatarModal() {
 }
 
 function closeAvatarModal() {
+    if(!avatarModal) return;
     avatarModal.classList.add('hidden')
 }
 
@@ -560,4 +564,44 @@ function selectAvatar(src) {
     avatarButton.style.backgroundImage = `url(${src})`;
     avatarButton.classList.add('avatar-chosen');
     closeAvatarModal();
+}
+
+let jokeTimer;
+
+function fetchJoke() {
+    fetch('/joke')
+        .then(response => response.text())
+        .then(joke => {
+            const jokeTextElement = document.getElementById('jokeText');
+            jokeTextElement.textContent = '';
+            showJokeModal();
+            console.log(joke)
+            jokeTimer = typeWriter(joke, jokeTextElement);
+        })
+        .catch(error => {
+            console.error('Error fetching joke:', error);
+        });
+}
+
+function showJokeModal() {
+   jokeModal.classList.remove('hidden');
+}
+
+function closeJokeModal() {
+    if(!jokeModal) return;
+    jokeModal.classList.add('hidden');
+    clearInterval(jokeTimer);
+}
+
+function typeWriter(text, element) {
+    let index = 0;
+    function type() {
+        if (index < text.length) {
+            element.textContent += text.charAt(index);
+            index++;
+            // setTimeout(type, 50);
+        }
+    }
+
+    return setInterval(type, 50);
 }

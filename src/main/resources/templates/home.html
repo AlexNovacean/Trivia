@@ -11,7 +11,8 @@
 
 
 <div class="header" th:fragment="header">
-    <a th:href="@{/home}"><button>HOME</button></a>
+    <a th:href="@{/home}"><button>Home</button></a>
+    <button onclick="fetchJoke()">Joke</button>
     <a sec:authorize="isAuthenticated()" th:href="@{/trivia}"><button>Trivia</button></a>
     <a sec:authorize="hasRole('ADMIN')" th:href="@{/users}"><button>Users</button></a>
     <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post">
@@ -74,6 +75,11 @@
         </div>
     </div>
 
+    <div id="jokeModal" class="hidden">
+        <div id="jokeContent">
+            <p id="jokeText"></p>
+        </div>
+    </div>
 
 </div>
 <script type="text/javascript" th:src="@{/js/script.js}"></script>
