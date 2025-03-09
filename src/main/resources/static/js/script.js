@@ -417,7 +417,7 @@ let currentQuestionIndex = 0;
 const questionContainers = document.querySelectorAll('.question-container');
 
 function navigate(direction) {
-    questionContainers[currentQuestionIndex].classList.add('active');
+    questionContainers[currentQuestionIndex].classList.remove('active');
     currentQuestionIndex += direction;
     handleNavigationButtons();
     questionContainers[currentQuestionIndex].classList.add('active');
@@ -532,6 +532,9 @@ function startQuiz(form){
 }
 const avatarModal = document.querySelector('#avatarModal');
 const jokeModal = document.querySelector('#jokeModal');
+const menuBurger = document.querySelector(".menu-burger");
+const headerButtons = document.querySelector(".header-buttons");
+const headerButtonsAll = document.querySelectorAll('.header-buttons button');
 
 window.onclick = function (event) {
     if (event.target === avatarModal) {
@@ -545,13 +548,25 @@ window.onclick = function (event) {
 document.addEventListener('keydown', function(event) {
     if (event.key === 'Escape') {
         closeAvatarModal();
+
         closeJokeModal();
+
         let categoryDescriptions = document.querySelectorAll('.category-accordion input[type="radio"]');
         Array.from(categoryDescriptions).forEach(description => {
             if (description.checked) {
                 description.checked = false;
             }
-        })
+        });
+
+        if (headerButtons.classList.contains('header-buttons-active')) {
+            headerButtons.classList.remove('header-buttons-active');
+        }
+
+        headerButtonsAll.forEach((button) => {
+            if (button.style.animation) {
+                button.style.animation = '';
+            }
+        });
     }
 });
 
@@ -605,9 +620,20 @@ function typeWriter(text, element) {
         if (index < text.length) {
             element.textContent += text.charAt(index);
             index++;
-            // setTimeout(type, 50);
         }
     }
 
     return setInterval(type, 50);
 }
+
+menuBurger.addEventListener('click', function () {
+    headerButtons.classList.toggle('header-buttons-active')
+
+    headerButtonsAll.forEach((button, index) => {
+        if (button.style.animation) {
+            button.style.animation = '';
+        } else {
+            button.style.animation = `headerButtonsFade 0.5s ease forwards ${index / 5 + 0.5}s`;
+        }
+    });
+});

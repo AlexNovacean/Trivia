@@ -38,10 +38,10 @@ public class HomeController {
     }
 
     @PostMapping("/quiz")
-    public String quiz(Model model, @ModelAttribute QuizDto quiz, Authentication auth) {
+    public String quiz(@ModelAttribute QuizDto quiz, Authentication auth) {
         quiz.setEmail(auth.getName());
-        model.addAttribute("quiz", quizService.createQuiz(quiz));
-        return "quiz";
+        quizService.createQuiz(quiz);
+        return "redirect:/quiz";
     }
 
     @GetMapping("/quiz")
