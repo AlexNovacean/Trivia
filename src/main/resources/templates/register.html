@@ -59,8 +59,8 @@
     </form>
 </div>
 
-<div id="avatarModal" class="modal hidden">
-    <div class="modal-content">
+<div id="avatarModal" class="avatar-modal hidden">
+    <div class="avatar-modal-content">
         <div class="avatar-grid">
             <div th:each="avatar : ${avatars}">
                 <img th:src="@{${avatar}}" th:alt="${avatar}" onclick="selectAvatar(this.src)" />

@@ -417,7 +417,7 @@ let currentQuestionIndex = 0;
 const questionContainers = document.querySelectorAll('.question-container');
 
 function navigate(direction) {
-    questionContainers[currentQuestionIndex].classList.remove('active');
+    questionContainers[currentQuestionIndex].classList.add('active');
     currentQuestionIndex += direction;
     handleNavigationButtons();
     questionContainers[currentQuestionIndex].classList.add('active');
@@ -533,7 +533,7 @@ function startQuiz(form){
 const avatarModal = document.querySelector('#avatarModal');
 const jokeModal = document.querySelector('#jokeModal');
 
-window.onclick = function(event) {
+window.onclick = function (event) {
     if (event.target === avatarModal) {
         closeAvatarModal();
     }
@@ -546,6 +546,12 @@ document.addEventListener('keydown', function(event) {
     if (event.key === 'Escape') {
         closeAvatarModal();
         closeJokeModal();
+        let categoryDescriptions = document.querySelectorAll('.category-accordion input[type="radio"]');
+        Array.from(categoryDescriptions).forEach(description => {
+            if (description.checked) {
+                description.checked = false;
+            }
+        })
     }
 });
 

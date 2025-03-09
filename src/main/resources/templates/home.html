@@ -21,9 +21,16 @@
 </div>
 
 <div id="home">
-<!--    TODO MAKE THIS ACCORDION-->
-    <div sec:authorize="isAuthenticated()" id="categories" th:each="category : ${T(ro.alex.trivia.model.TriviaCategory).values()}">
-        <span th:text="${category}" /><span th:text="${category.description}" />
+    <div class="category-description" sec:authorize="isAuthenticated()">
+        <ul class="category-accordion" th:each="category : ${T(ro.alex.trivia.model.TriviaCategory).values()}">
+            <li>
+                <input type="radio" name="accordion" th:id="${category}">
+                <label th:for="${category}" th:text="${category}"></label>
+                <div class="category-content">
+                    <p th:text="${category.description}" />
+                </div>
+            </li>
+        </ul>
     </div>
 
 

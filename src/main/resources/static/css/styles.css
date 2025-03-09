@@ -1,15 +1,62 @@
-.header *{
-    display: inline-block;
-    padding: 20px;
-    margin: 0 10px;
+* {
+    margin: 0;
+    padding: 0;
+    font-family: "Roboto", sans-serif;
+    box-sizing: border-box;
 }
 
-.header {
-    padding: 20px;
+.category-accordion {
+    margin: 10px auto;
+    width: 50%;
 }
 
-.generate-code {
-    color: brown;
+.category-accordion li {
+    list-style: none;
+    width: 100%;
+    margin: 20px;
+    padding: 10px;
+    border-radius: 8px;
+    background: antiquewhite;
+    box-shadow: 6px 6px 10px -1px rgba(0, 0, 0, 0.15),
+                -6px -6px 10px -1px rgba(255, 255, 255, 0.7);
+}
+
+ .category-accordion li label {
+     display: flex;
+     align-items: center;
+     padding: 10px;
+     font-size: 18px;
+     font-weight: 500;
+     cursor: pointer ;
+ }
+
+.category-accordion li label::before {
+    content: '⮝';
+    margin-right: 10px;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.category-accordion input[type="radio"] {
+    display: none;
+}
+
+.category-accordion .category-content {
+    color: #555;
+    padding: 0 10px;
+    line-height: 26px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s, padddin 0.5s;
+}
+
+.category-accordion input[type="radio"]:checked + label + .category-content {
+    max-height: 400px;
+    padding: 10px 10px 20px ;
+}
+
+.category-accordion input[type="radio"]:checked + label::before {
+    content: '⮟';
 }
 
 .hidden {
@@ -24,14 +71,6 @@
     display: grid;
     width: 100%;
     grid-template-columns: 2fr 2fr 1fr 1fr 1fr 1fr;
-}
-
-.trivia-cell{
-    padding: 10px;
-}
-
-.hidden {
-    display: none;
 }
 
 .add-trivia-button {
@@ -56,10 +95,6 @@
     display: grid;
     width: 100%;
     grid-template-columns: repeat(6, 1fr);
-}
-
-.user-cell{
-    padding: 10px;
 }
 
 .question-container {
@@ -90,7 +125,7 @@
     font-style: italic;
 }
 
-.modal {
+.avatar-modal {
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
     left: 0;
@@ -102,7 +137,7 @@
     background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
 }
 
-.modal-content {
+.avatar-modal-content {
     background-color: #fefefe;
     margin: 15% auto; /* 15% from the top and centered */
     padding: 20px;
@@ -167,7 +202,6 @@
     justify-content: center;
     align-items: center;
     z-index: 1;
-
 }
 
 #jokeContent {
