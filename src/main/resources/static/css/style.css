@@ -19,8 +19,10 @@ body {
     width: 100%;
     min-height: 10vh;
     position: fixed;
+    top: 0;
     padding: 0 20%;
 }
+
 
 .header-title h1 {
     font-family: "Playwrite HU", cursive;
@@ -51,12 +53,13 @@ body {
 
 .header-buttons {
     display: flex;
-    justify-content: space-around;
+    justify-content: right;
     width: 50%;
 }
 
 .header-buttons button {
     padding: 10px 20px;
+    margin: 0 10px;
     background-color: #739589;
     color: white;
     border: none;
@@ -115,8 +118,110 @@ body {
     grid-area: 2/1/3/3;
 }
 
-.start-quiz, .quiz-category, .start-quiz-button {
-    background-color: #FFFFFF;
+.quiz-container {
+    height: 46vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.quiz-difficulty{
+    display: flex;
+    justify-content: center;
+    min-width: 80%;
+    height: 4rem;
+}
+
+#difficulty {
+    border: none;
+    appearance: none;
+    padding: 0 30px 0 15px;
+    width: 100%;
+    color: black;
+    background-color: #C2A381;
+    font-size: 20px;
+    box-shadow: 6px 6px 10px -1px rgba(0, 0, 0, 0.15),
+    -6px -6px 10px -1px rgba(255, 255, 255, 0.7);
+}
+
+#difficulty:hover {
+    transform: scale(1.1);
+}
+
+.err-cat, .err-diff {
+    color: darkred;
+    font-style: italic;
+    font-size: 1rem;
+    margin-top: 1rem;
+}
+
+.category-checkbox {
+    display: none;
+}
+
+.category-selection {
+    display: flex;
+    justify-content: center;
+}
+
+.category-label {
+    width: 100%;
+    text-align: center;
+    margin: 5px 0;
+    display: inline-block;
+    padding: 10px 20px;
+    cursor: pointer;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    background-color: #C2A381;
+    transition: background-color 0.3s, border-color 0.3s;
+    box-shadow: 6px 6px 10px -1px rgba(0, 0, 0, 0.15),
+    -6px -6px 10px -1px rgba(255, 255, 255, 0.7);
+}
+
+.category-checkbox:checked ~ .category-label {
+    background-color: #DED4A7;
+    border-color: #DED4A7;
+}
+
+.start-quiz{
+    overflow-y: auto;
+}
+
+.quiz-category > p {
+    font-weight: 800;
+}
+
+.start-quiz-btn, .login-btn, .register-btn, .continue-quiz-btn{
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: #C2A381;
+    border-radius: 5px;
+    border: none;
+    font-weight: 800;
+    box-shadow: 6px 6px 10px -1px rgba(0, 0, 0, 0.15),
+    -6px -6px 10px -1px rgba(255, 255, 255, 0.7);
+}
+
+.login-btn, .register-btn, .continue-quiz-btn {
+    text-decoration: none;
+    color: black;
+    font-size: 1.5rem;
+    font-family: "Playwrite HU", cursive;
+}
+
+.start-quiz-btn:hover, .login-btn:hover, .register-btn:hover,
+.continue-quiz-btn:hover, .nav-button:hover,.category-label:hover {
+    transform: scale(1.2);
+}
+
+.home-authentication, .started-quiz {
+    display: flex;
+    flex-direction: column;
+    height: 46vh;
+    align-items: center;
+    justify-content: space-evenly;
 }
 
 .home-auth-quiz, .home-leaderboard {
@@ -166,7 +271,6 @@ body {
 
 .yes-leaderboard *{
     display: flex;
-    /*flex-wrap: wrap;*/
     justify-content: center;
     align-items: center;
 }
@@ -189,81 +293,6 @@ body {
     background-color: #DED4A7;
 }
 
-@media screen and (max-width: 1792px) {
-    .header-buttons {
-        width: 60%;
-    }
-}
-
-@media screen and (max-width: 1536px) {
-    .header-buttons {
-        width: 70%;
-    }
-}
-
-@media screen and (max-width: 1280px) {
-    .header-buttons {
-        width: 80%;
-    }
-}
-
-@media screen and (max-width: 1024px) {
-    .home-container {
-        grid-template-columns: 1fr;
-        padding: 15vh 5% 0 5%;
-    }
-
-    .home-auth-quiz, .home-leaderboard, .category-description {
-        grid-area: auto;
-    }
-
-    .header {
-        padding: 0 10%;
-    }
-
-    .header-buttons {
-        position: absolute;
-        right: 0;
-        height: 90vh;
-        top: 10vh;
-        background-color: #C2A381;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 30%;
-        transform: translateX(100%);
-        transition: transform 0.5s ease-in;
-    }
-
-    .header-buttons button {
-        opacity: 0;
-    }
-
-    .menu-burger {
-        display: block;
-        cursor: pointer;
-    }
-}
-
-@media screen and (max-width: 768px) {
-
-}
-
-.header-buttons-active {
-    transform: translateX(0%);
-}
-
-@keyframes headerButtonsFade {
-    from {
-        opacity: 0;
-        transform: translateX(50px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0px);
-    }
-}
-
 .category-accordion {
     margin: 10px auto;
     width: 80%;
@@ -272,7 +301,7 @@ body {
 .category-accordion li {
     list-style: none;
     width: 100%;
-    margin: 20px;
+    margin: 20px 0;
     padding: 10px;
     border-radius: 8px;
     background: #C2A381;
@@ -322,6 +351,18 @@ body {
     display: none !important;
 }
 
+.visible, .invisible{
+    transition: opacity 1s;
+}
+
+.visible {
+    opacity: 1;
+}
+
+.invisible {
+    opacity: 0;
+}
+
 #jokeModal {
     position: fixed;
     display: flex;
@@ -344,20 +385,343 @@ body {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
-/* width */
+.register {
+    padding: 15vh 20% 0 20%;
+    margin: 0 auto;
+    width: 80%;
+    height: 80vh;
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+.register-container {
+    background-color: #A9BC9E;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    box-shadow: 6px 6px 10px -1px rgba(0, 0, 0, 0.15),
+    -6px -6px 10px -1px rgba(255, 255, 255, 0.7);
+}
+
+.register-buttons {
+    display: flex;
+    justify-content: space-evenly;
+    width: 60vh;
+}
+
+.register-buttons > div {
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: #C2A381;
+    border-radius: 5px;
+    border: none;
+    font-weight: 800;
+    box-shadow: 6px 6px 10px -1px rgba(0, 0, 0, 0.15),
+    -6px -6px 10px -1px rgba(255, 255, 255, 0.7);
+}
+
+.register-buttons > div:hover {
+    transform: scale(1.2);
+}
+
+.register-buttons > div > a,.register-buttons > div > button {
+    text-decoration: none;
+    color: black;
+    font-family: "Playwrite HU", cursive;
+    background-color: #C2A381;
+    border: none;
+    font-size: 1rem;
+    font-weight: 800;
+}
+
+.register-input {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#displayName, #email, #password {
+    font-size: 1.5rem;
+    padding: 10px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.register-container > h1{
+    font-family: 'Playwrite HU', cursive;
+    font-size: 3rem;
+}
+
+.error-register {
+    color: darkred;
+    font-style: italic;
+}
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    height: 60vh;
+}
+
+.avatar-modal {
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.avatar-modal-content {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    border-radius: 5px;
+    width: 40%;
+}
+
+.avatar-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.avatar-grid img {
+    max-width: 100%;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.avatar-grid img:hover {
+    transform: scale(1.1);
+}
+
+.avatar-grid div {
+    margin: auto;
+}
+
+.chose-avatar {
+    background-color: #739589;
+    color: black;
+    border: none;
+    border-radius: 50%;
+    width: 6vw;
+    height: 6vw;
+    font-size: 1vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.avatar-chosen {
+    background-size: cover;
+    background-position: center;
+    background-color: transparent;
+    color: transparent;
+}
+
+.chose-avatar:hover {
+    transform: scale(1.1);
+}
+
+.activate-account, .login{
+    padding: 0 20% 0 20%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    background-color: #739589;
+    font-size: 2rem;
+    margin: 7% auto 0;
+    width: 80%;
+    height: 80vh;
+    border-radius: 10px;
+    box-shadow: 6px 6px 10px -1px rgba(0, 0, 0, 0.15),
+    -6px -6px 10px -1px rgba(255, 255, 255, 0.7);
+}
+
+.activate-account p {
+    margin: 10px;
+    padding: 10px;
+}
+
+.generate-code {
+    width: 90vh;
+}
+
+.activate-account input, .activate-account button {
+    font-size: 1.5rem;
+    padding: 10px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.activate-btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: #C2A381;
+    border-radius: 5px;
+    border: none;
+    font-weight: 800;
+    box-shadow: 6px 6px 10px -1px rgba(0, 0, 0, 0.15),
+    -6px -6px 10px -1px rgba(255, 255, 255, 0.7);
+}
+
+.activate-btn:hover {
+    transform: scale(1.2);
+}
+
+.hide {
+    visibility: hidden;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    height: 60vh;
+}
+
+.login-err {
+    font-style: italic;
+    font-size: 2rem;
+    color: darkred;
+}
+
+.login-ok {
+    font-weight: 800;
+    font-size: 2rem;
+    color: black;
+}
+
+.login-form input {
+    font-size: 1.5rem;
+    padding: 10px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.login-buttons *, .login-buttons a {
+    text-decoration: none;
+    color: black;
+    font-family: "Playwrite HU", cursive;
+    padding: 10px 20px;
+    font-size: 1.5rem !important;
+    background-color: #C2A381;
+    border-radius: 5px;
+    border: none;
+    font-weight: 800;
+    box-shadow: 6px 6px 10px -1px rgba(0, 0, 0, 0.15),
+    -6px -6px 10px -1px rgba(255, 255, 255, 0.7);
+}
+
 ::-webkit-scrollbar {
     width: 20px;
 }
 
-/* Track */
 ::-webkit-scrollbar-track {
-    /*box-shadow: inset 0 0 5px grey;*/
     background: #A9BC9E;
     border-radius: 10px;
 }
 
-/* Handle */
 ::-webkit-scrollbar-thumb {
     background: #739589;
     border-radius: 10px;
+}
+
+@keyframes headerButtonsFade {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0px);
+    }
+}
+
+@media screen and (max-width: 1792px) {
+    .header-buttons {
+        width: 60%;
+    }
+}
+
+@media screen and (max-width: 1536px) {
+    .header-buttons {
+        width: 70%;
+    }
+}
+
+@media screen and (max-width: 1280px) {
+    .header-buttons {
+        width: 80%;
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    .home-container {
+        grid-template-columns: 1fr;
+        padding: 15vh 5% 0 5%;
+    }
+
+    .home-auth-quiz, .home-leaderboard, .category-description {
+        grid-area: auto;
+    }
+
+    .header {
+        padding: 0 10%;
+    }
+
+    .header-buttons {
+        position: absolute;
+        right: 0;
+        height: 90vh;
+        top: 10vh;
+        background-color: #C2A381;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 30%;
+        transform: translateX(100%);
+        transition: transform 0.5s ease-in;
+        justify-content: space-around;
+    }
+
+    .header-buttons button {
+        opacity: 0;
+    }
+
+    .menu-burger {
+        display: block;
+        cursor: pointer;
+    }
+
+    .register {
+        padding: 15vh 0 0 0;
+    }
+
+    .register-buttons{
+        width: 50vh;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .category-accordion {
+        width: 90%;
+    }
+}
+
+.header-buttons-active {
+    transform: translateX(0%);
 }

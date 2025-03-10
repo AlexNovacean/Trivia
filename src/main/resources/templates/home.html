@@ -34,42 +34,62 @@
 
         <div class="home-authentication"  id="authentication" sec:authorize="!isAuthenticated()">
             <div th:if="${registrationError}">Could not complete registration due to error. Please try again</div>
-            <a class="login-btn" th:href="@{/login}">
-                <button>Log In</button>
-            </a>
-            <a class="register-btn" th:href="@{/register}">
-                <button>New User?</button>
-            </a>
+            <a class="login-btn" th:href="@{/login}">Log In</a>
+            <a class="register-btn" th:href="@{/register}">New User?</a>
         </div>
 
         <div class="home-quiz" id="quiz" sec:authorize="isAuthenticated()">
+
+
             <div class="start-quiz" th:if="${!startedQuiz}">
                 <form method="post" onsubmit="return startQuiz(this);" th:action="@{/quiz}" th:object="${quiz}">
-                    <div class="quiz-difficulty">
-                        <label for="difficulty">Difficulty:</label>
-                        <select id="difficulty" th:field="*{difficulty}">
-                            <option th:each="difficulty : ${T(ro.alex.trivia.model.TriviaDifficulty).values()}"
-                                    th:text="${difficulty}" th:value="${difficulty}"></option>
-                        </select>
-                    </div>
-                    <div class="quiz-category">
-                        <label>Categories:</label>
-                        <div th:each="category : ${T(ro.alex.trivia.model.TriviaCategory).values()}">
-                            <input th:field="*{categories}" th:value="${category}" type="checkbox"/>
-                            <span th:text="${category}"></span>
+
+                    <div class="quiz-container">
+
+                        <div class="nav-button"><img th:src="@{/element/up.png}" onclick="navigateQuizStart(-1)" alt="up" /></div>
+
+                        <div class="quiz-carousel">
+
+                            <div class="quiz-difficulty visible">
+                                <select id="difficulty" onchange="checkDifficultySelection(this);" th:field="*{difficulty}">
+                                    <option value="" selected>Select Difficulty</option>
+                                    <option th:each="difficulty : ${T(ro.alex.trivia.model.TriviaDifficulty).values()}"
+                                            th:text="${difficulty}" th:value="${difficulty}"></option>
+                                </select>
+
+                            </div>
+                            <p class="err-diff hidden">Select a difficulty</p>
+
+                            <div class="quiz-category visible invisible hidden">
+                                <p>Select quiz categories</p>
+                                <br />
+                                <div class="category-selection" th:each="category : ${T(ro.alex.trivia.model.TriviaCategory).values()}">
+                                    <input onchange="checkCategorySelection()" class="category-checkbox" th:id="${category}" th:field="*{categories}" th:value="${category}" type="checkbox"/>
+                                    <label class="category-label" th:for="${category}" th:text="${category}"></label>
+                                </div>
+                                <br />
+                                <p class="err-cat hidden">Select at least one category</p>
+                            </div>
+                            <p class="err-cat hidden">Select at least one category</p>
+
+                            <div class="start-quiz-button visible  invisible hidden">
+                                <button class="start-quiz-btn" type="submit">Start QUIZ</button>
+                            </div>
+
                         </div>
-                        <p class="err-answer hidden">Please select at least one category</p>
+
+                        <div class="nav-button"><img th:src="@{/element/down.png}" onclick="navigateQuizStart(1)" alt="down" /></div>
+
                     </div>
-                    <div class="start-quiz-button">
-                        <button class="start-quiz-btn" type="submit">Start QUIZ</button>
-                    </div>
+
 
                 </form>
             </div>
+
+
+
             <div class="started-quiz" th:if="${startedQuiz}">
-                <a class="continue-quiz-btn" th:href="@{/quiz}">
-                    <button>Continue Quiz</button>
-                </a>
+                <a class="continue-quiz-btn" th:href="@{/quiz}">Continue Quiz</a>
             </div>
         </div>
     </div>
@@ -89,12 +109,12 @@
             </div>
         </div>
 
-        <div class="category-description" sec:authorize="isAuthenticated()">
+        <div class="category-description">
             <h2 class="category-description-title">Trivia categories</h2>
             <ul class="category-accordion" th:each="category, iteration : ${T(ro.alex.trivia.model.TriviaCategory).values()}">
                 <li>
-                    <input name="accordion-input" th:id="${category}" type="radio" th:checked="${iteration.index==0}">
-                    <label th:for="${category}" th:text="${category}"></label>
+                    <input name="accordion-input" th:id="${category} + ${iteration.index}" type="radio" th:checked="${iteration.index==0}">
+                    <label th:for="${category} + ${iteration.index}" th:text="${category}"></label>
                     <div class="category-content">
                         <p th:text="${category.description}"/>
                     </div>
@@ -102,7 +122,7 @@
             </ul>
         </div>
 
-        <div class="hidden" id="jokeModal">
+        <div th:fragment="jokeModal" class="hidden" id="jokeModal">
             <div id="jokeContent">
                 <p id="jokeText"></p>
             </div>

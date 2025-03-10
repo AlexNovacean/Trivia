@@ -426,6 +426,87 @@ function navigate(direction) {
     }
 }
 
+let currentQuizIndex = 0;
+const quizCarouselElements = document.querySelectorAll('.quiz-carousel > div');
+
+function navigateQuizStart(direction){
+    let oldIndex = currentQuizIndex;
+    quizCarouselElements[oldIndex].addEventListener('transitionend', function hideIt(){
+        quizCarouselElements[oldIndex].classList.add('hidden');
+        this.removeEventListener('transitionend', arguments.callee, false);
+    })
+    quizCarouselElements[oldIndex].classList.add('invisible');
+
+
+    currentQuizIndex = (currentQuizIndex + direction + quizCarouselElements.length) % quizCarouselElements.length;
+
+    setTimeout(function () {
+        quizCarouselElements[currentQuizIndex].classList.remove('hidden');
+        setTimeout(function () {
+            quizCarouselElements[currentQuizIndex].classList.remove('invisible');
+        }, 10);
+    }, 1000);
+
+}
+
+function startQuiz(form){
+    if (!form.querySelector('.err-diff').classList.contains('hidden')) {
+        form.querySelector('.err-diff').classList.add('hidden');
+    }
+    if (!form.querySelector('.err-cat').classList.contains('hidden')) {
+        form.querySelector('.err-cat').classList.add('hidden');
+    }
+
+
+    if (!form.querySelector('select').value) {
+        setTimeout(function () {
+            form.querySelector('.err-diff').classList.remove('hidden');
+        }, 1000);
+        navigateQuizStart(1);
+        return false;
+    }
+
+    let checked = false;
+    Array.from(form.querySelectorAll('input[type="checkbox"]')).forEach(checkbox => {
+        if (checkbox.checked) {
+            checked = true;
+        }
+    })
+    if (!checked) {
+        setTimeout(function () {
+            form.querySelector('.err-cat').classList.remove('hidden');
+        }, 1000);
+        navigateQuizStart(-1);
+        return false;
+    }
+
+    return true;
+}
+
+function checkDifficultySelection(select){
+    if (!document.querySelector('.err-diff').classList.contains('hidden') &&
+        select.value) {
+        document.querySelector('.err-diff').classList.add('hidden');
+    }
+}
+
+function checkCategorySelection(){
+    let checked = false;
+
+    Array.from(document.querySelectorAll('.category-checkbox')).forEach(checkbox => {
+        if(checkbox.checked) {
+            checked = true;
+        }
+        if (!document.querySelector('.err-cat').classList.contains('hidden') && checkbox.checked) {
+            document.querySelector('.err-cat').classList.add('hidden');
+        }
+    });
+
+    if (document.querySelector('.err-cat').classList.contains('hidden') && !checked) {
+        document.querySelector('.err-cat').classList.remove('hidden');
+    }
+}
+
 function handleNavigationButtons(){
     if (currentQuestionIndex === 0) {
         document.querySelector('#prev-btn').disabled = true;
@@ -517,19 +598,6 @@ function displayAnswers(response) {
     document.querySelector('#home-btn').classList.remove('hidden');
 }
 
-function startQuiz(form){
-    let checked = false;
-    Array.from(form.querySelectorAll('input[type="checkbox"]')).forEach(checkbox => {
-        if (checkbox.checked) {
-            checked = true;
-        }
-    })
-    if (!checked) {
-        form.querySelector('.err-answer').classList.remove('hidden');
-        return false;
-    }
-    return true;
-}
 const avatarModal = document.querySelector('#avatarModal');
 const jokeModal = document.querySelector('#jokeModal');
 const menuBurger = document.querySelector(".menu-burger");
