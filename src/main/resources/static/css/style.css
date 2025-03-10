@@ -165,7 +165,7 @@ body {
     justify-content: center;
 }
 
-.category-label {
+.category-label, .answers label {
     width: 100%;
     text-align: center;
     margin: 5px 0;
@@ -180,7 +180,7 @@ body {
     -6px -6px 10px -1px rgba(255, 255, 255, 0.7);
 }
 
-.category-checkbox:checked ~ .category-label {
+.category-checkbox:checked ~ .category-label, .answers-input:checked + .answers-label {
     background-color: #DED4A7;
     border-color: #DED4A7;
 }
@@ -212,7 +212,7 @@ body {
 }
 
 .start-quiz-btn:hover, .login-btn:hover, .register-btn:hover,
-.continue-quiz-btn:hover, .nav-button:hover,.category-label:hover {
+.continue-quiz-btn:hover, .nav-button:hover,.category-label:hover, .answers label:hover {
     transform: scale(1.2);
 }
 
@@ -534,7 +534,7 @@ body {
     transform: scale(1.1);
 }
 
-.activate-account, .login{
+.activate-account, .login, .quiz-body{
     padding: 0 20% 0 20%;
     display: flex;
     flex-direction: column;
@@ -614,6 +614,66 @@ body {
 
 .login-buttons *, .login-buttons a {
     text-decoration: none;
+    color: black;
+    font-family: "Playwrite HU", cursive;
+    padding: 10px 20px;
+    font-size: 1.5rem !important;
+    background-color: #C2A381;
+    border-radius: 5px;
+    border: none;
+    font-weight: 800;
+    box-shadow: 6px 6px 10px -1px rgba(0, 0, 0, 0.15),
+    -6px -6px 10px -1px rgba(255, 255, 255, 0.7);
+}
+
+.quiz-body {
+    padding: 0 !important;
+    overflow-y: auto;
+    display: grid !important;
+    gap: 3rem;
+}
+
+.question-container {
+    display: none;
+    width: 100vh;
+}
+
+.question-container.active {
+    display: inline-block;
+}
+
+.highlight-correct {
+    background-color: #d4edda;
+}
+
+.highlight-incorrect {
+    background-color: #f8d7da;
+}
+
+.err-answer{
+    color: darkred;
+    font-weight: bold;
+    font-style: italic;
+}
+
+.answers {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.answers input {
+    display: none;
+}
+
+.quiz-buttons {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.quiz-buttons button {
     color: black;
     font-family: "Playwrite HU", cursive;
     padding: 10px 20px;
